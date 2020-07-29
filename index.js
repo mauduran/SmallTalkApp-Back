@@ -6,9 +6,11 @@ const io = require('socket.io')(http);
 const cors = require('cors');
 const conversationsRoute = require('./Endpoints/Conversations');
 const messagesRoute = require('./Endpoints/Messages');
+const usersRoute = require('./Endpoints/Users');
 
 const dummyConversations = require('./Dummies/dummyConversations');
 const dummyMessages = require('./Dummies/dummyMessages');
+// const dummyUsers = require('./Dummies/dummyUsers');
 
 let activeUsers = [];
 
@@ -18,6 +20,7 @@ app.use(cors());
 
 app.use('/conversations', conversationsRoute);
 app.use('/messages', messagesRoute);
+app.use('/users', usersRoute);
 
 
 io.on('connection', (socket) => {
