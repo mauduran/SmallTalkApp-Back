@@ -28,7 +28,6 @@ router.route('/')
 
         dummyConversations.updateDummyConversations([...convos, newConversation]);
 
-        console.log(newConversation);
 
         res.json(newConversation);
 
@@ -37,7 +36,6 @@ router.route('/')
 router.route('/:username')
     .get((req, res) => {
         const conversations = dummyConversations.getDummyConversations().sort((a,b)=>{
-            console.log(a.lastMessage.date - b.lastMessage.date);
             return b.lastMessage.date - a.lastMessage.date;
         });
 

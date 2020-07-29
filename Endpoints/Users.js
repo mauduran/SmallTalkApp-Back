@@ -22,8 +22,6 @@ router.route('/:userId')
 
         const user = users.find(usr => usr.userId==userId);
 
-        console.log(user);
-
         res.json(user);
     });
 
