@@ -62,11 +62,15 @@ io.on('connection', (socket) => {
                 date: Date.now(),
                 sender: user.username
             }
-            console.log(message);
+
+            let convo = dummyConversations.getDummyConversations().find(conversation=>conversation.conversationId==messageObj.conversationId);
+
+            convo.lastMessage = message;
+            console.log(messageObj);
 
             dummyMessages.getDummyMessages().push(message);
 
-            socket.nsp.to(messageObj.roomId).emit('incomingMessage', message);
+            socket.nsp.to(messageObj.conversationId).emit('incomingMessage', message);
 
         }
     })
