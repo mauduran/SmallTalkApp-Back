@@ -7,6 +7,6 @@ router.route('/:conversationId')
     .get((req, res) => {
         const messages = dummyMessages.getDummyMessages();
 
-        res.json(messages.filter(message=>message.roomId==req.params.conversationId));
+        res.json(messages.filter(message=>message.conversationId==req.params.conversationId));
     });
 module.exports = router; 

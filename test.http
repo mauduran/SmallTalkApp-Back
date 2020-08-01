@@ -1,0 +1,14 @@
+GET http://localhost:3001/conversations/45
+
+###
+
+GET http://localhost:3001/users?searchInput=Mauricio
+
+###
+
+PUT http://localhost:3001/conversations/2/updatetitle
+Content-Type: application/json
+
+{
+    "title": "hola"
+}
