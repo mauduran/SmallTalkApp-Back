@@ -1,69 +1,80 @@
 const express = require('express');
-const router = express.Router();
 
 const dummyConversations = require('../Dummies/dummyConversations');
+const dummyActiveUsers = require('../Dummies/dummyActiveUsers');
 
+const createConversation = (io) => (req, res) => {
+    let newId = -1;
 
-router.route('/')
-    .post((req, res) => {
-        console.log(req.body);
-        let newId = -1;
+    const convos = dummyConversations.getDummyConversations();
+    convos.forEach(element => {
+        if (element.conversationId > newId) newId = element.conversationId;
+    });
 
-        const convos = dummyConversations.getDummyConversations();
-        convos.forEach(element => {
-            if (element.conversationId > newId) newId = element.conversationId;
-        });
+    newId++;
 
-        newId++;
-
-        const newConversation = {
-            ...req.body,
-            conversationId: newId,
-            lastMessage: {
-                body: "",
-                date: new Date(),
-                sender: ""
-            }
+    const newConversation = {
+        ...req.body,
+        conversationId: newId,
+        lastMessage: {
+            body: "",
+            date: new Date(),
+            sender: ""
         }
+    }
 
-        dummyConversations.updateDummyConversations([...convos, newConversation]);
+    dummyConversations.updateDummyConversations([...convos, newConversation]);
 
-
-        res.json(newConversation);
-
-    });
-
-router.route('/:username')
-    .get((req, res) => {
-        const conversations = dummyConversations.getDummyConversations().sort((a, b) => {
-            return b.lastMessage.date - a.lastMessage.date;
-        });
-
-        res.json(conversations.filter(el => el.members && el.members.includes(req.params.username)));
-
-    });
+    const {conversationId, members} = newConversation;
 
 
-router.route('/:conversationId/updatetitle')
-    .put((req, res) => {
-        let conversationId = req.params.conversationId;
+    let activeSockets = dummyActiveUsers.getDummyActiveSockets();
 
-        const title = req.body.title;
-
-        if (!title) return res.status(400).json('No title was provided.');
-
-        let convo = dummyConversations.getDummyConversations().find(el =>  el.conversationId == conversationId);
-
-        console.log(convo)
-        if (convo) {
-            convo.title = title;
-            return res.json(title);
+    members.forEach((member)=>{
+        let socketID = activeSockets[member];
+        console.log("socketID: " + socketID);
+        if(socketID){
+            io.to(socketID).emit('newConversation', conversationId);
         }
-        res.status(400).json('Unexisting conversation Id.');
+    })
 
+    res.json(newConversation);
+
+};
+
+const getUserConversations = (req, res) => {
+    const conversations = dummyConversations.getDummyConversations().sort((a, b) => {
+        return b.lastMessage.date - a.lastMessage.date;
     });
 
+    res.json(conversations.filter(el => el.members && el.members.includes(req.params.username)));
+
+};
 
 
 
-module.exports = router; 
+const updateConversationTitle = (io) => (req, res) => {
+    let conversationId = req.params.conversationId;
+
+    const title = req.body.title;
+
+    if (!title) return res.status(400).json('No title was provided.');
+
+    let convo = dummyConversations.getDummyConversations().find(el => el.conversationId == conversationId);
+
+    if (convo) {
+        convo.title = title;
+        io.to(conversationId).emit('updateConversationTitle', conversationId);
+        return res.json(title);
+    }
+
+    res.status(400).json('Unexisting conversation Id.');
+
+};
+
+
+module.exports = {
+    getUserConversations,
+    updateConversationTitle,
+    createConversation
+}; 
