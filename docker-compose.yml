@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  small-talk-backend:
+    container_name: small-talk-backend
+    build: ./
+    command: npm start
+    working_dir: /usr/src/small-talk-backend
+    environment: 
+      REDIS_URI: redis://redis:6379
+      MONGO_DB: mongoTestUrl
+    ports:
+      - "3001:3001"
+    volumes: 
+      - ./:/usr/src/small-talk-backend
+    
+  redis:
+    container_name: small-talk-Redis
+    image: redis
+    ports:
+        - "6379:6379"
