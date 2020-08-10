@@ -55,7 +55,6 @@ router.route('/register')
                 }
 
                 let loginDocument = Login(newLogin);
-
                 loginDocument.save({ session })
                     .then(async login => {
                         res.json(user);
