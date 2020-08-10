@@ -5,7 +5,7 @@ let loginSchema = mongoose.Schema({
         hash: String
 })
 
-let Login = mongoose.model("login", loginSchema);
+let Login = mongoose.model("loginCredentials", loginSchema);
 
 module.exports = Login;
 

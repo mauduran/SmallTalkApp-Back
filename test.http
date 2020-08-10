@@ -18,10 +18,14 @@ POST http://localhost:3001/users/register
 Content-Type: application/json
 
 {
-    "firstName": "Juan",
-    "lastName": "Ramos",
-    "email": "JuanRamos@gmail.com",
-    "username":"JuanR",
-    "password": "JPRR44"
+    "firstName": "Mauricio",
+    "lastName": "Duran",
+    "email": "mauduran4@gmail.com",
+    "username":"mau4duran",
+    "password": "is716122"
 }
 
+
+###
+
+GET http://localhost:3001/users/register
