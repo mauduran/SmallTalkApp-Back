@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -5,6 +7,7 @@ const port = process.env.PORT || 3001;
 const io = require('socket.io')(http);
 const cors = require('cors');
 const morgan = require('morgan');
+const db = require('./DB/mongoDB-connection');
 
 const conversationsRoute = require('./Endpoints/Conversations');
 const messagesRoute = require('./Endpoints/Messages');
@@ -20,7 +23,6 @@ app.use(morgan('tiny'));
 
 app.use('/messages', messagesRoute);
 app.use('/users', usersRoute);
-
 
 //Conversations
 app.post('/conversations', conversationsRoute.createConversation(io));

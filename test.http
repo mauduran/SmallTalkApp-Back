@@ -12,3 +12,16 @@ Content-Type: application/json
 {
     "title": "hola"
 }
+
+###
+POST http://localhost:3001/users/register
+Content-Type: application/json
+
+{
+    "firstName": "Juan",
+    "lastName": "Ramos",
+    "email": "JuanRamos@gmail.com",
+    "username":"JuanR",
+    "password": "JPRR44"
+}
+
