@@ -4,7 +4,7 @@ services:
   small-talk-backend:
     container_name: small-talk-backend
     build: ./
-    command: npm start
+    command: npm run dev
     working_dir: /usr/src/small-talk-backend
     environment: 
       REDIS_URI: redis://redis:6379

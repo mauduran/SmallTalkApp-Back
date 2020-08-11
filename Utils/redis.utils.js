@@ -1,32 +1,46 @@
 const redis = require('redis');
 const redisClient = redis.createClient(process.env.REDIS_URI)
 
-const addTokenID = (token, id ) =>{
-    redisClient.hset("jwt",token, id, (err, res) => {
-        if(err || !res ){
-            return{
+const addFieldToHashTable = (collection, field, id) => {
+    redisClient.hset(collection, field, id, (err, res) => {
+        if (err || !res) {
+            return {
                 error: "unauthorized",
             }
         }
-        console.log(res);
         return {
-            id: id,
+            success: true,
         }
     })
 }
 
-const removeTokenId = () => {
-    redisClient.hdel("jwt",token, (err, res) => {
-        if(err || !res ){
-            return{
+const getFieldFromHashTable = (collection, field) => {
+
+    return new Promise((resolve, reject)=>{
+        redisClient.hget(collection, field, (err, res) => {
+            if (err || !res) {
+                reject({ error: "Couldn't get requested field" })
+            }
+    
+            resolve({ data: res })
+        })
+    })
+
+}
+
+const removeFieldFromHashTable = (collection, field) => {
+    redisClient.hdel(collection, field, (err, res) => {
+        if (err || !res) {
+            console.log("Error!")
+            return {
                 error: "unexpected error",
             }
         }
-        console.log(res);
         return {
             success: true
         }
     })
 }
 
-module.exports = {addTokenID, removeTokenId};
+
+module.exports = { addFieldToHashTable, removeFieldFromHashTable, getFieldFromHashTable };

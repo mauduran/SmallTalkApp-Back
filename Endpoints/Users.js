@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../DB/mongoDB-connection');
 const dummyUsers = require('../Dummies/dummyUsers');
 const mongoose = require('../DB/mongoDB-connection');
-const {addTokenID, removeTokenId} = require('../Utils/redis.utils');
+const { addFieldToHashTable, removeFieldFromHashTable, getFieldFromHashTable } = require('../Utils/redis.utils');
 
 router.route('/')
     .get((req, res) => {
@@ -38,10 +38,10 @@ router.route('/register')
             return;
         }
 
-        let existingUser = await User.findOne({username});
-        existingUser = existingUser ? existingUser : await User.findOne({email});
+        let existingUser = await User.findOne({ username });
+        existingUser = existingUser ? existingUser : await User.findOne({ email });
         console.log(existingUser);
-        if(existingUser){
+        if (existingUser) {
             let response = {
                 success: false,
                 error: "Username or email already in use"
@@ -106,15 +106,24 @@ router.route('/register')
             })
     })
 
+
 router.route('/login')
-    .post(async (req,res) => {
+    .post(async (req, res) => {
 
     })
-
-    .get(async (req, res) => {
-        addTokenID(123, 4);
+    .get((req, res) => {
+        getFieldFromHashTable('jwt', 987)
+            .then(resp => {
+                console.log(resp.data);
+                res.json("OK");
+            })
+            .catch(err => {
+                console.log("Unexpected Error");
+                res.status(400).json(err);
+            })
     })
- 
+
+
 router.route('/:userId')
     .get((req, res) => {
         const userId = req.params.userId;
