@@ -8,7 +8,10 @@ services:
     working_dir: /usr/src/small-talk-backend
     environment: 
       REDIS_URI: redis://redis:6379
-      MONGO_DB: mongoTestUrl
+      DB_USER: JuanRamos  
+      DB_PSW: Juanp101466
+      DB_CLUSTER: SmallTalk    
+      DB_NAME: smalltalk
     ports:
       - "3001:3001"
     volumes: 

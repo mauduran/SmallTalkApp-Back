@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../DB/mongoDB-connection');
 const dummyUsers = require('../Dummies/dummyUsers');
 const mongoose = require('../DB/mongoDB-connection');
+const {addTokenID, removeTokenId} = require('../Utils/redis.utils');
 
 router.route('/')
     .get((req, res) => {
@@ -29,7 +30,24 @@ router.route('/register')
         } = req.body
 
         if (!firstName || !lastName || !email || !username || !password) {
-            req.status(400).json("Incorrect form submission");
+            let response = {
+                success: false,
+                error: "Missing fields"
+            }
+            res.status(400).json(response);
+            return;
+        }
+
+        let existingUser = await User.findOne({username});
+        existingUser = existingUser ? existingUser : await User.findOne({email});
+        console.log(existingUser);
+        if(existingUser){
+            let response = {
+                success: false,
+                error: "Username or email already in use"
+            }
+            res.status(409).json(response);
+            return
         }
 
         const session = await db.startSession();
@@ -57,31 +75,46 @@ router.route('/register')
                 let loginDocument = Login(newLogin);
                 loginDocument.save({ session })
                     .then(async login => {
-                        res.json(user);
+                        let response = {
+                            success: true,
+                            user: user
+                        }
+                        res.json(response);
                         await session.commitTransaction();
                         return
                     })
                     .catch(async error => {
                         await session.abortTransaction();
-                        res.status(400).json("unable to register");
+                        let response = {
+                            success: false,
+                            error: "Unable to register"
+                        }
+                        res.status(400).json(response);
                         console.log(error)
+                        return;
                     })
             })
             .catch(async error => {
                 await session.abortTransaction();
-                res.status(400).json("unable to register");
+                let response = {
+                    success: false,
+                    error: "Unable to register"
+                }
+                res.status(400).json(response);
                 console.log(error)
+                return;
             })
     })
 
-    .get(async (req, res) => {
+router.route('/login')
+    .post(async (req,res) => {
 
-        User.find({}, (err, docs) => {
-            console.log(docs);
-            res.status(201).json("OK");
-        })
     })
 
+    .get(async (req, res) => {
+        addTokenID(123, 4);
+    })
+ 
 router.route('/:userId')
     .get((req, res) => {
         const userId = req.params.userId;
