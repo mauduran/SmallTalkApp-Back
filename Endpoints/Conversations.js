@@ -31,10 +31,10 @@ const createConversation = (io) => (req, res) => {
     let activeSockets = dummyActiveUsers.getDummyActiveSockets();
 
     members.forEach((member)=>{
-        let socketID = activeSockets[member];
-        console.log("socketID: " + socketID);
-        if(socketID){
-            io.to(socketID).emit('newConversation', conversationId);
+        let socketId = activeSockets[member];
+        console.log("socketId: " + socketId);
+        if(socketId){
+            io.to(socketId).emit('newConversation', conversationId);
         }
     })
 

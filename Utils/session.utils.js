@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
-const { addFieldToHashTable, getFieldFromHashTable } = require('../Utils/redis.utils');
-const { response } = require('express');
+const {
+    addFieldToHashTable,
+    getFieldFromHashTable
+} = require('../Utils/redis.utils');
+const {
+    response
+} = require('express');
 
 const getTokenFromAuthString = (auth) => {
     const authArray = auth.split(" ");
@@ -8,21 +13,27 @@ const getTokenFromAuthString = (auth) => {
 }
 
 const setToken = (token, id) => {
-    const response = addFieldToHashTable('jwt', token, 'id');
-
-    if (response.error) {
-        return Promise.reject(response.error);
-    }
-    return Promise.resolve(response.id);
+    return addFieldToHashTable('jwt', token, id)
+        .then(response => {
+            return Promise.resolve(response)
+        })
+        .catch(err => {
+            console.log(err)
+            return Promise.reject(err)
+        })
 }
 
 const getAuthTokenId = (req, res) => {
-    const { authorization } = req.headers;
+    const {
+        authorization
+    } = req.headers;
     const token = getTokenFromAuthString(authorization);
 
     getFieldFromHashTable('jwt', token)
         .then(resp => {
-            res.json({ id: resp.data })
+            res.json({
+                id: resp.data
+            })
             return;
         })
         .catch(err => {
@@ -36,16 +47,35 @@ const signToken = (email, username) => {
     return jwt.sign({
         email,
         username
-    }, "ReacttcaeR", { expiresIn: "1 days" })
+    }, "ReacttcaeR", {
+        expiresIn: "1 days"
+    })
 }
 
 
-const createSession = (token, userObj) => {
-    const newToken = signToken(userObj.email ,userObj.username);
-    
+const createSession = (userObj) => {
+    return new Promise((resolve, reject) => {
+        const newToken = signToken(userObj.email, userObj.username);
+        setToken(newToken, userObj._id)
+            .then(() =>
+                resolve({
+                    success: true,
+                    userId: userObj._id,
+                    token: newToken,
+                    username: userObj.username
+                })
+            )
+            .catch((error) => {
+                console.log(error)
+                reject({
+                    success: false,
+                    ...error
+                })
+            })
+    })
 }
 
-
-const createSession = () => {
-
+module.exports = {
+    createSession,
+    getAuthTokenId
 }

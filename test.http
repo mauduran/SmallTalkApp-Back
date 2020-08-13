@@ -25,7 +25,15 @@ Content-Type: application/json
     "password": "is716122"
 }
 
+###
+GET http://localhost:3001/users/register
 
 ###
+POST http://localhost:3001/users/login
+Content-Type: application/json
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdWR1cmFuNEBnbWFpbC5jb20iLCJ1c2VybmFtZSI6Im1hdTRkdXJhbiIsImlhdCI6MTU5NzI4OTIwNywiZXhwIjoxNTk3Mzc1NjA3fQ.4yWY9LhmaP0ZnSrABieNrrnjdw0TR_w-fZWMm84pMOY
 
-GET http://localhost:3001/users/register
+{
+    "username":"mau4duran",
+    "password": "is716122"
+}

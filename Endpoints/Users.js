@@ -7,6 +7,7 @@ const db = require('../DB/mongoDB-connection');
 const dummyUsers = require('../Dummies/dummyUsers');
 const mongoose = require('../DB/mongoDB-connection');
 const { addFieldToHashTable, removeFieldFromHashTable, getFieldFromHashTable } = require('../Utils/redis.utils');
+const {createSession, getAuthTokenId } = require ('../Utils/session.utils');
 
 router.route('/')
     .get((req, res) => {
@@ -109,7 +110,17 @@ router.route('/register')
 
 router.route('/login')
     .post(async (req, res) => {
-
+        const { authorization } = req.headers;
+        return authorization ? getAuthTokenId(req,res) :
+        handleSignInCredentials(req)
+        .then(user => {
+            return (user._id && user.username) ? createSession(user) : Promise.reject(user)
+        
+        })
+        .then(session => {
+            return res.json(session)})
+        .catch(err => {
+            return res.status(400).json(err)})
     })
     .get((req, res) => {
         getFieldFromHashTable('jwt', 987)
@@ -135,6 +146,20 @@ router.route('/:userId')
         res.json(user);
     });
 
+
+const handleSignInCredentials = async (req) => {
+    const { email, username, password } = req.body;
+    if( (!email&&!username) || !password ){
+        return Promise.reject('Missing fields');
+    }
+    const user = await User.findOne( { $or:[{username:username}, {email:email}]})
+    if (!user){
+        return Promise.reject('Wrong credentials');
+    }
+    const userCredentials = await Login.findOne({userId:user._id})
+    const validCredentials = bcrypt.compareSync(password, userCredentials.hash);
+    return validCredentials ? Promise.resolve(user) : Promise.reject('Wrong credentials');
+}
 
 
 module.exports = router;
