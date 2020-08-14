@@ -24,7 +24,8 @@ let userSchema = mongoose.Schema({
         type:String,
         required: true
     },
-    blockedUsers: [mongoose.Schema.Types.ObjectId]
+    blockedUsers: [mongoose.Schema.Types.ObjectId],
+    conversations: [mongoose.Schema.Types.ObjectId]
 })
 
 let User = mongoose.model("users", userSchema);

@@ -2,26 +2,19 @@ const redis = require('redis');
 const redisClient = redis.createClient(process.env.REDIS_URI)
 
 const addFieldToHashTable = (collection, field, id) => {
-    console.log('Collection:')
-    console.log(collection)
-    console.log('Field:')
-    console.log(field)
-    console.log('id:')
-    console.log(id)
+
     return new Promise((resolve, reject) => {
-        redisClient.hdel(collection, field, (error, response) => {
-            redisClient.hset(collection, field, id, (err, res) => {
-                if (err || !res) {
-                    return reject({
-                        error: "unauthorized",
-                    })
-                }
-                return resolve({
-                    success: true,
+        redisClient.hset(collection, field, ''+id, (err, res) => {
+            console.log(err);
+            if (err || !res) {
+                return reject({
+                    error: "unauthorized",
                 })
+            }
+            return resolve({
+                success: true,
             })
         })
-       
     })
 }
 
