@@ -153,7 +153,6 @@ const GetUserById = async (req, res) => {
     res.json(user);
 }
 
-
 module.exports = {
     UserRegisterController,
     UserLoginController,

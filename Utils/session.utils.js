@@ -24,7 +24,7 @@ const setToken = (token, id) => {
         })
 }
 
-const getAuthTokenId = (req, res) => {
+const getAuthTokenId = (req, res, next) => {
     const {
         authorization
     } = req.headers;
@@ -32,6 +32,10 @@ const getAuthTokenId = (req, res) => {
 
     getFieldFromHashTable('jwt', token)
         .then(resp => {
+            if(next) {
+                req.params.userId = resp.data;
+                return next();
+            }
             res.json({
                 id: resp.data
             })
@@ -43,6 +47,7 @@ const getAuthTokenId = (req, res) => {
         })
 
 }
+
 
 const signToken = (email, username) => {
     return jwt.sign({

@@ -1,8 +1,8 @@
-GET http://localhost:3001/conversations/45
+GET http://localhost:3001/users/5f360008dc537c01e9e05de4
 
 ###
 
-GET http://localhost:3001/users?searchInput=mau4duran
+GET http://localhost:3001/users?
 
 ###
 
@@ -18,21 +18,24 @@ POST http://localhost:3001/users/register
 Content-Type: application/json
 
 {
-    "firstName": "Mauricio",
-    "lastName": "Duaran",
-    "email": "mau4duran@gmail.com",
-    "username":"mau4duran",
-    "password": "123456"
+    "firstName": "Juan Pablo",
+    "lastName": "Ramos",
+    "email": "jprr44@gmail.com",
+    "username":"jprr44",
+    "password": "654321"
 }
 
 ###
-GET http://localhost:3001/users/login
+GET http://localhost:3001/users/register
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdTRkdXJhbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6Im1hdTRkdXJhbiIsImlhdCI6MTU5NzYxNjU5NSwiZXhwIjoxNTk3NzAyOTk1fQ.NOtFU605PHqCwgBHxeK__HiQNLehQZe6Srt4DpEaMDY
+
 
 ###
 POST http://localhost:3001/users/login
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdTRkdXJhbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6Im1hdTRkdXJhbiIsImlhdCI6MTU5NzYxNjU5NSwiZXhwIjoxNTk3NzAyOTk1fQ.NOtFU605PHqCwgBHxeK__HiQNLehQZe6Srt4DpEaMDY
 
-{
-    "username": "mau4duran",
-    "password": "123456"
-}
+###
+
+GET http://localhost:3001/users/user
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdTRkdXJhbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6Im1hdTRkdXJhbiIsImlhdCI6MTU5NzYxNjU5NSwiZXhwIjoxNTk3NzAyOTk1fQ.NOtFU605PHqCwgBHxeK__HiQNLehQZe6Srt4DpEaMDY
