@@ -1,5 +1,7 @@
 const redisUtils = require('./redis.utils');
 
+
+
 const storeActiveUser = (socketId, userId) => {
     return redisUtils.addFieldToHashTable('activeUsers', '' + socketId, userId);
 }
@@ -52,9 +54,28 @@ const getSocketIdFromUser = async (userId) => {
     return socketId;
 }
 
+const subscribeMembersToConversation = async (io, members) => {
+
+    members.forEach(async (member) => {
+        let socketId;
+        try {
+            socketId = await getSocketIdFromUser(member.username);
+            socketId = socketId.data;
+        } catch (error) {
+            console.log("Error. Could not notify member of new conversation");
+            return;
+        }
+
+        if(socketId){
+            io.to(socketId).emit('newConversation', conversationId);
+        }
+    });
+}
+
 module.exports = {
     storeUserSocket,
     removeUserSocket,
     getUserIdFromSocket,
-    getSocketIdFromUser
+    getSocketIdFromUser,
+    subscribeMembersToConversation
 }
