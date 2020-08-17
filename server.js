@@ -7,7 +7,6 @@ const port = process.env.PORT || 3001;
 const io = require('socket.io')(http);
 const cors = require('cors');
 const morgan = require('morgan');
-const db = require('./DB/mongoDB-connection');
 
 const conversationsRoute = require('./Endpoints/Conversations');
 const messagesRoute = require('./Endpoints/Messages');
@@ -15,7 +14,8 @@ const usersRoute = require('./Endpoints/Users');
 
 const dummyConversations = require('./Dummies/dummyConversations');
 const dummyMessages = require('./Dummies/dummyMessages');
-const dummyActiveUsers = require('./Dummies/dummyActiveUsers');
+
+const { storeUserSocket, removeUserSocket, getUserIdFromSocket } = require('./Utils/socket.utils');
 
 app.use(express.json());
 app.use(cors());
@@ -35,11 +35,7 @@ io.on('connection', (socket) => {
     socket.on('login', (user) => {
         const username = user.username;
 
-        let activeUsers = dummyActiveUsers.getDummyActiveUsers();
-        let activeSockets = dummyActiveUsers.getDummyActiveSockets();
-
-        activeUsers[socket.id] = username;
-        activeSockets[username] = socket.id;
+        storeUserSocket(socket.id, username);
 
         let userConversations = dummyConversations.getDummyConversations().filter((convo) => {
             return convo.members.includes(username);
@@ -48,21 +44,23 @@ io.on('connection', (socket) => {
         userConversations.forEach((convo) => {
             socket.join(convo.conversationId);
         })
-
-        dummyActiveUsers.updateDummyActiveUsers(activeUsers);
-        dummyActiveUsers.updateDummyActiveSockets(activeSockets);
     });
 
 
-    socket.on('message', (messageObj) => {
-        let activeUsers = dummyActiveUsers.getDummyActiveUsers();
-        
-        const user = activeUsers[socket.id];
+    socket.on('message', async (messageObj) => {
+
+        let user;
+        try {
+            user = await getUserIdFromSocket(socket.id);
+            user = user.data
+        } catch (error) {
+            user = undefined;
+        }
 
         if (user) {
             const message = {
                 ...messageObj,
-                date: Date.now(),
+                date: new Date(),
                 sender: user
             }
 
@@ -76,20 +74,16 @@ io.on('connection', (socket) => {
 
         }
     })
-    
-    socket.on('disconnect', () => {
-        let activeUsers = dummyActiveUsers.getDummyActiveUsers();
-        let activeSockets = dummyActiveUsers.getDummyActiveSockets();
 
-        const userId = activeUsers[socket.id];
-        delete activeSockets[userId];
-        delete activeUsers[socket.id];
-
-        dummyActiveUsers.updateDummyActiveSockets(activeSockets);
-        dummyActiveUsers.updateDummyActiveUsers(activeUsers);
-
+    socket.on('disconnect', async () => {
+        let userId;
+        try {
+            userId = await getUserIdFromSocket(socket.id);
+        } catch (error) {
+            userId = undefined;
+        }
+        removeUserSocket(socket.id, userId);
     })
-
 })
 
 
