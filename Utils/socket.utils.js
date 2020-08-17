@@ -42,8 +42,19 @@ const getUserIdFromSocket = async (socketId) => {
     return userId;
 }
 
+const getSocketIdFromUser = async (userId) => {
+    let socketId;
+    try {
+        socketId = redisUtils.getFieldFromHashTable('activeSockets', '' + userId);
+    } catch (error) {
+        socketId = null; 
+    }   
+    return socketId;
+}
+
 module.exports = {
     storeUserSocket,
     removeUserSocket,
-    getUserIdFromSocket
+    getUserIdFromSocket,
+    getSocketIdFromUser
 }
