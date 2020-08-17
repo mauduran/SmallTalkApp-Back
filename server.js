@@ -16,6 +16,9 @@ const dummyConversations = require('./Dummies/dummyConversations');
 const dummyMessages = require('./Dummies/dummyMessages');
 
 const { storeUserSocket, removeUserSocket, getUserIdFromSocket } = require('./Utils/socket.utils');
+const { createConversation, getConversations } = require('./Endpoints/Controllers/ConversationController');
+
+const {requireAuth} = require('./Middlewares/authorizarion');
 
 app.use(express.json());
 app.use(cors());
@@ -24,10 +27,15 @@ app.use(morgan('tiny'));
 app.use('/messages', messagesRoute);
 app.use('/users', usersRoute);
 
+//New Controllers connected to DB
+app.get('/conversations/v2', requireAuth, getConversations);
+app.post('/conversations/v2', requireAuth, createConversation(io));
+
 //Conversations
 app.post('/conversations', conversationsRoute.createConversation(io));
 app.get('/conversations/:username', conversationsRoute.getUserConversations);
 app.put('/conversations/:conversationId/updatetitle', conversationsRoute.updateConversationTitle(io));
+
 
 
 io.on('connection', (socket) => {
