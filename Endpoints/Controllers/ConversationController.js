@@ -59,12 +59,9 @@ const createConversation = (io) => async (req, res) => {
 const getConversations = async (req, res) => {
     const userId = req.params.userId;
     let conversations;
-    console.log("hey");
     try {
         conversations = await Conversation.find({"members.userId": userId});
-        console.log("hola");
     } catch (error) {
-        console.log("no hey");
         console.log(error);
         conversations = []
     }
