@@ -1,14 +1,14 @@
 const mongoose = require('./mongoDB-connection');
 
 let conversationSchema = mongoose.Schema({
-    title: String,
-    imgUrl: String,
-    members: [{userId: ObjectId, username: String, lastMessageSeen: Date}],
+    title: {type: String, default: ""},
+    imgUrl: {type: String, default: ""},
+    members: [{userId: mongoose.Schema.Types.ObjectId, username: String, lastMessageSeen: Date}],
     lastMessage: {
-        _id: ObjectId,
+        _id: mongoose.Schema.Types.ObjectId,
         body: String,
         date: Date,
-        sender: {userId: ObjectId, username: String}
+        sender: {userId: mongoose.Schema.Types.ObjectId, username: String}
     }
 })
 
