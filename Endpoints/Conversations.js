@@ -1,9 +1,10 @@
 const express = require('express');
 
-const dummyConversations = require('../Dummies/dummyConversations');
-const dummyActiveUsers = require('../Dummies/dummyActiveUsers');
+const {getSocketIdFromUser} = require('../Utils/socket.utils')
 
-const createConversation = (io) => (req, res) => {
+const dummyConversations = require('../Dummies/dummyConversations');
+
+const createConversation = (io) => async (req, res) => {
     let newId = -1;
 
     const convos = dummyConversations.getDummyConversations();
@@ -28,11 +29,16 @@ const createConversation = (io) => (req, res) => {
     const {conversationId, members} = newConversation;
 
 
-    let activeSockets = dummyActiveUsers.getDummyActiveSockets();
+    members.forEach(async (member)=>{
+        let socketId;
+        try {
+            socketId = await getSocketIdFromUser(member);
+            socketId = socketId.data;
+        } catch (error) {
+            console.log("Error. Could not notify member of new conversation");
+            return;
+        }
 
-    members.forEach((member)=>{
-        let socketId = activeSockets[member];
-        console.log("socketId: " + socketId);
         if(socketId){
             io.to(socketId).emit('newConversation', conversationId);
         }
@@ -42,7 +48,7 @@ const createConversation = (io) => (req, res) => {
 
 };
 
-const getUserConversations = (req, res) => {
+const getUserConversations =  (req, res) => {
     const conversations = dummyConversations.getDummyConversations().sort((a, b) => {
         return b.lastMessage.date - a.lastMessage.date;
     });
