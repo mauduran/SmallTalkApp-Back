@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const UserControllers = require('./Controllers/UserControllers');
 
-const test = require('../Middlewares/testMiddleware');
 const {requireAuth} = require('../Middlewares/authorizarion');
 
 router.route('/')
