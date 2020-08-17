@@ -5,10 +5,9 @@ const addFieldToHashTable = (collection, field, id) => {
 
     return new Promise((resolve, reject) => {
         redisClient.hset(collection, field, ''+id, (err, res) => {
-            console.log(err);
-            if (err || !res) {
+            if (err) {
                 return reject({
-                    error: "unauthorized",
+                    error: `Could not insert into ${collection}`,
                 })
             }
             return resolve({
@@ -27,7 +26,6 @@ const getFieldFromHashTable = (collection, field) => {
                     error: "Couldn't get requested field"
                 })
             }
-
             resolve({
                 data: res
             })
@@ -38,10 +36,9 @@ const getFieldFromHashTable = (collection, field) => {
 
 const removeFieldFromHashTable = (collection, field) => {
     redisClient.hdel(collection, field, (err, res) => {
-        if (err || !res) {
-            console.log("Error!")
+        if (err) {
             return {
-                error: "unexpected error",
+                error: `Couldn't remove ${field} from ${collection} `,
             }
         }
         return {
