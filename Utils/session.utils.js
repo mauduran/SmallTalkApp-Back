@@ -53,7 +53,7 @@ const signToken = (email, username) => {
     return jwt.sign({
         email,
         username
-    }, "ReacttcaeR", {
+    }, process.env.TOKEN_SECRET, {
         expiresIn: "1 days"
     })
 }

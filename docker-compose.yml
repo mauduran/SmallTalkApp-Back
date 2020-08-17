@@ -12,6 +12,7 @@ services:
       DB_PSW: Juanp101466
       DB_CLUSTER: SmallTalk    
       DB_NAME: smalltalk
+      TOKEN_SECRET: ReacttcaeR
     ports:
       - "3001:3001"
     volumes: 
