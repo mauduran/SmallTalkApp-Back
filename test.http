@@ -2,7 +2,7 @@ GET http://localhost:3001/users/5f360008dc537c01e9e05de4
 
 ###
 
-GET http://localhost:3001/users?
+GET http://localhost:3001/users
 
 ###
 
@@ -18,10 +18,10 @@ POST http://localhost:3001/users/register
 Content-Type: application/json
 
 {
-    "firstName": "Juan Pablo",
-    "lastName": "Ramos",
-    "email": "jprr44@gmail.com",
-    "username":"jprr44",
+    "firstName": "José Francisco",
+    "lastName": "González",
+    "email": "frank@gmail.com",
+    "username":"francesc",
     "password": "654321"
 }
 
@@ -35,7 +35,36 @@ POST http://localhost:3001/users/login
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdTRkdXJhbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6Im1hdTRkdXJhbiIsImlhdCI6MTU5NzYxNjU5NSwiZXhwIjoxNTk3NzAyOTk1fQ.NOtFU605PHqCwgBHxeK__HiQNLehQZe6Srt4DpEaMDY
 
+
+###
+POST http://localhost:3001/users/login
+Content-Type: application/json
+
+{
+    "username": "francesc",
+    "password": "654321"
+}
 ###
 
 GET http://localhost:3001/users/user
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdTRkdXJhbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6Im1hdTRkdXJhbiIsImlhdCI6MTU5NzYxNjU5NSwiZXhwIjoxNTk3NzAyOTk1fQ.NOtFU605PHqCwgBHxeK__HiQNLehQZe6Srt4DpEaMDY
+
+
+###
+
+POST http://localhost:3001/conversations/v2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdTRkdXJhbkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6Im1hdTRkdXJhbiIsImlhdCI6MTU5NzYxNjU5NSwiZXhwIjoxNTk3NzAyOTk1fQ.NOtFU605PHqCwgBHxeK__HiQNLehQZe6Srt4DpEaMDY
+
+{
+    "members": [
+        "5f360008dc537c01e9e05de4",
+        "5f39e53c2c7b47005793fd34"
+    ]
+}
+
+
+###
+
+GET http://localhost:3001/conversations/v2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZyYW5rQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoiZnJhbmNlc2MiLCJpYXQiOjE1OTc3MDgwMTcsImV4cCI6MTU5Nzc5NDQxN30.J7HhrGH-xdlpGHHe5BRPaG5Jvw-bcgIT6RLLtCDtiH8
